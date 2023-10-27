@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -31,30 +32,21 @@ class PostController extends AbstractController
 {
     
     #[Route('/posts', name: 'post_index', methods: ['get'])]
-    public function index(PosteService $service): JsonResponse
+    public function index(PosteService $service, SerializerService $serializerService): JsonResponse
     {
         $posts = $service->getAllPosts();
-        $data = [];
-
-        foreach ($posts as $post) {
-            $data[] = [
-                'id' => $post->getId(),
-                'title' => $post->getTitle(),
-                'content' => $post->getContent(),
-            ];
-        }
-
-        return $this->json($data);
+        
+        return new JsonResponse($serializerService->serialize($posts, "post:read"));
     }
     
 
     #[Route('/posts/{id}', name: 'post_show', methods: ['get'])] 
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function show(PosteService $service, int $id): JsonResponse
+    public function show(PosteService $service, SerializerService $serializerService, int $id): JsonResponse
     {
         $post = $service->getPost($id);
 
-        return $this->json($post);
+        return new JsonResponse($serializerService->serialize($post, "post:read"));
     }
 
 
@@ -81,6 +73,7 @@ class PostController extends AbstractController
                 try {
                     // Envoie de mail après une insertion reussie
                     $serviceMailService->sendMail($security->getToken()->getUser());
+                    
                 } catch (TransportExceptionInterface $e) {
                     return new JsonResponse(["error" => $e->getMessage(), "description" => "Poste crée mais le mail n'a pas été envoyé "], Response::HTTP_INTERNAL_SERVER_ERROR);
                 }

@@ -2,13 +2,7 @@
 
 namespace App\Service;
 
-use App\Entity\User;
-use App\Entity\Article;
-use App\Entity\Category;
-use Symfony\Component\Mime\Email;
-use App\Repository\UserRepository;
 use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Mailer\MailerInterface;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
