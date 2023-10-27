@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
@@ -47,7 +48,8 @@ class PostController extends AbstractController
     }
     
 
-    #[Route('/posts/{id}', name: 'post_show', methods: ['get'])]
+    #[Route('/posts/{id}', name: 'post_show', methods: ['get'])] 
+    #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function show(PosteService $service, int $id): JsonResponse
     {
         $post = $service->getPost($id);
