@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter
 #[Route('/api', name: 'api_register')]
 class RegistrationController extends AbstractController
 {
-    #[Route('/register', name: 'app_register')]
+    #[Route('/register', name: 'app_register', methods: ['post'])]
     public function register(Request $request,SerializerService $serializerService, SecurityService $securityService)
     {
         $normalizer = new ObjectNormalizer(null, new CamelCaseToSnakeCaseNameConverter());
@@ -28,7 +28,9 @@ class RegistrationController extends AbstractController
         $form = $this->createForm(RegistrationFormType::class, $user);
         $form->handleRequest($request);
         $data = json_decode($request->getContent(), true);
+        
         $user = $normalizer->denormalize($data, User::class);
+        
         $form->submit($data, false);
         
         if ($form->isSubmitted()) {

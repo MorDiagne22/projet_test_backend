@@ -8,7 +8,6 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
 use Doctrine\ORM\Mapping as ORM;
-use App\State\UserPasswordHasher;
 use App\Repository\UserRepository;
 use ApiPlatform\Metadata\ApiResource;
 use App\Controller\SecurityController;
